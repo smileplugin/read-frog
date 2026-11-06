@@ -36,6 +36,7 @@ jobs:
           cp -R .output/chrome-mv3/. dist/read-frog-codex/extension/
           cp codex-bridge/client.mjs codex-bridge/server.mjs dist/read-frog-codex/codex-bridge/
           cp CODEX_SUBSCRIPTION.md dist/read-frog-codex/
+          cp CODEX_LATENCY_SOURCES.md dist/read-frog-codex/
       - uses: actions/upload-artifact@v4
         with:
           name: read-frog-codex-chrome

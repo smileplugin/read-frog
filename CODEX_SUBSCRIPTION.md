@@ -81,7 +81,7 @@ WXT_SKIP_ENV_VALIDATION=true pnpm build
 
 桥接测试使用模拟 Codex 进程与 HTTP 请求，覆盖认证、API Key 拒绝、模型发现、流式响应、结构化输出、取消与超时。
 
-### 2026-11-06 真实订阅验证
+### 2026-11-06 首次真实订阅验证（HTTP 传输修复前）
 
 在 macOS、Node.js 25.1.0、Codex CLI 0.164.0 上，使用本机已登录的 ChatGPT 账号，在临时隔离目录复用登录凭据，通过真实 HTTP 桥接调用 `gpt-6-luna`，未使用 OpenAI API Key。测试结束后临时凭据已删除。
 
@@ -96,6 +96,8 @@ WXT_SKIP_ENV_VALIDATION=true pnpm build
 
 实测发现并修复了两个兼容问题：正常的 `userMessage` 生命周期事件被误判为工具调用；扩展队列的普通 20 秒超时会提前取消慢速 Codex 请求。现在默认端口的 Codex 服务商获得至少 125 秒的网页及字幕队列等待时间，其他服务商保留原有超时策略；回归测试覆盖这些情况。
 
-这些结果证明真实订阅的 HTTP 文本生成链路可用。本次延迟明显偏高，原因尚未定位；未在浏览器中实测完整网页排版、视频字幕播放或大批量并发，因此不能把接口连通等同于所有浏览体验已经验证。
+这些结果证明真实订阅的文本生成链路可用。随后已定位并规避当前环境下的 WebSocket 连接重试，正式桥接改用保留 ChatGPT 认证的 HTTP/SSE 上游；端到端复测普通翻译约 7.2 秒、流式约 4.0 秒、JSON 约 7.1 秒。详细分段计时、对照实验和源码依据见 [延迟调研](./CODEX_LATENCY_SOURCES.md)。旧的 116–118 秒记录不代表修复后的速度保证。
+
+未在浏览器中实测完整网页排版、视频字幕播放或大批量并发，因此不能把接口连通等同于所有浏览体验已经验证。
 
 参考：[官方 Codex app-server 文档](https://learn.chatgpt.com/docs/app-server)、[官方认证说明](https://learn.chatgpt.com/docs/auth)。

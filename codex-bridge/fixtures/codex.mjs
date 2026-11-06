@@ -4,12 +4,25 @@ const send = (message) => console.log(JSON.stringify(message))
 createInterface({ input: process.stdin }).on("line", (line) => {
   const { id, method, params } = JSON.parse(line)
   const reply = (result) => send({ id, result })
-  if (method === "initialize") reply({})
+  if (method === "initialize") {
+    if (
+      process.env.TEST_CODEX_REQUIRE_HTTP &&
+      !process.argv.includes("model_providers.read-frog-codex.supports_websockets=false")
+    ) {
+      send({ id, error: { message: "Expected authenticated HTTP-only provider" } })
+      return
+    }
+    reply({})
+  }
   if (method === "account/read")
     reply({ account: { type: process.env.TEST_CODEX_ACCOUNT || "chatgpt" } })
   if (method === "model/list")
     reply({ data: [{ model: "fixture-model", isDefault: true }], nextCursor: null })
   if (method === "thread/start") {
+    if (process.env.TEST_CODEX_REQUIRE_HTTP && params.modelProvider !== "read-frog-codex") {
+      send({ id, error: { message: "Thread must use the HTTP-only provider" } })
+      return
+    }
     if (params.sandbox !== "read-only" || params.approvalPolicy !== "never" || !params.ephemeral) {
       send({ id, error: { message: "Unsafe thread configuration" } })
       return

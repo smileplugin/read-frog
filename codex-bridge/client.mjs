@@ -5,6 +5,7 @@ import { join } from "node:path"
 import { createInterface } from "node:readline"
 
 export const codexHome = process.env.READ_FROG_CODEX_HOME || join(homedir(), ".read-frog-codex")
+const CODEX_PROVIDER = "read-frog-codex"
 
 // A separate Codex home avoids loading the user's projects, MCP servers or plugins.
 export async function createCodexClient({ signal, timeoutMs = 120_000 } = {}) {
@@ -17,7 +18,16 @@ export async function createCodexClient({ signal, timeoutMs = 120_000 } = {}) {
       "--listen",
       "stdio://",
       "-c",
-      'model_provider="openai"',
+      `model_provider="${CODEX_PROVIDER}"`,
+      // Use authenticated HTTP/SSE directly: failed WebSocket handshakes otherwise
+      // consume a retry budget for every fresh translation session. Built-in
+      // provider IDs cannot be overridden, so this uses a dedicated provider ID.
+      "-c",
+      `model_providers.${CODEX_PROVIDER}.name="Read Frog Codex (HTTP)"`,
+      "-c",
+      `model_providers.${CODEX_PROVIDER}.requires_openai_auth=true`,
+      "-c",
+      `model_providers.${CODEX_PROVIDER}.supports_websockets=false`,
       "-c",
       'web_search="disabled"',
       "-c",
@@ -156,7 +166,7 @@ export async function createCodexClient({ signal, timeoutMs = 120_000 } = {}) {
       async complete({ model, messages, schema, onDelta }) {
         const { thread } = await rpc("thread/start", {
           model,
-          modelProvider: "openai",
+          modelProvider: CODEX_PROVIDER,
           cwd,
           ephemeral: true,
           approvalPolicy: "never",
