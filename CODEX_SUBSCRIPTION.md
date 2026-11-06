@@ -4,10 +4,21 @@
 
 ## 安装和使用
 
+如果使用 GitHub Actions 的 `read-frog-codex-chrome` 构建包，解压后在浏览器加载 `extension/`，并在解压目录运行下面两条命令即可启动配套桥接，无需安装项目依赖。需要 Node.js 22 或更新版本，以及官方 Codex CLI：
+
+```bash
+node codex-bridge/server.mjs --login
+node codex-bridge/server.mjs
+```
+
+然后从下文第 6 步配置服务商即可。如果选择从源码构建，使用以下步骤：
+
 1. 安装官方 Codex CLI，确认终端能执行 `codex --version`。已有 Codex 桌面版不一定代表 CLI 已在 PATH 中。
 2. 在本仓库目录安装依赖并构建扩展：
 
    ```bash
+   git clone --branch feat/codex-subscription https://github.com/smileplugin/read-frog.git
+   cd read-frog
    pnpm install --frozen-lockfile
    WXT_SKIP_ENV_VALIDATION=true pnpm build
    ```

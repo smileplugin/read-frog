@@ -20,8 +20,8 @@ createInterface({ input: process.stdin }).on("line", (line) => {
     reply({ turn: { id: "fixture-turn" } })
     if (process.env.TEST_CODEX_HANG) return
     const content = params.outputSchema ? '{"translated":"你好"}' : "你好"
-    const event = (method, extra) =>
-      send({ method, params: { threadId: params.threadId, ...extra } })
+    const event = (eventMethod, extra) =>
+      send({ method: eventMethod, params: { threadId: params.threadId, ...extra } })
     event("item/started", { item: { id: "commentary", type: "agentMessage", phase: "commentary" } })
     event("item/agentMessage/delta", { itemId: "commentary", delta: "Thinking..." })
     event("item/started", { item: { id: "final", type: "agentMessage", phase: "final_answer" } })

@@ -30,8 +30,13 @@ jobs:
         if: ${{ !cancelled() }}
       - run: pnpm build
         if: ${{ !cancelled() }}
+      - name: Package extension and local companion
+        run: |
+          mkdir -p dist/read-frog-codex/extension dist/read-frog-codex/codex-bridge
+          cp -R .output/chrome-mv3/. dist/read-frog-codex/extension/
+          cp codex-bridge/client.mjs codex-bridge/server.mjs dist/read-frog-codex/codex-bridge/
+          cp CODEX_SUBSCRIPTION.md dist/read-frog-codex/
       - uses: actions/upload-artifact@v4
         with:
           name: read-frog-codex-chrome
-          path: .output/chrome-mv3/
-          include-hidden-files: true
+          path: dist/read-frog-codex/

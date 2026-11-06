@@ -46,7 +46,7 @@ export default function AddProviderDialog({ onClose }: { onClose: () => void }) 
             const providers = store.get(configFieldsAtomMap.providersConfig)
             const provider = createCodexProvider(providers, token, model)
             await setProvidersConfig([...providers, provider])
-            setSelectedProviderId(provider.id)
+            await setSelectedProviderId(provider.id)
             onClose()
           })
         }}

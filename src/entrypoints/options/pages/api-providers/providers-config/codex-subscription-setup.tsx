@@ -40,10 +40,11 @@ export function CodexSubscriptionSetup({
         (entry): entry is { id: string; isDefault?: boolean } =>
           !!entry && typeof entry === "object" && typeof entry.id === "string",
       )
-      if (!available.length) throw new Error("No Codex models available")
+      const initialModel = available.find((entry) => entry.isDefault) ?? available[0]
+      if (!initialModel) throw new Error("No Codex models available")
       if (controller.signal.aborted) return
       setModels(available.map((entry) => entry.id))
-      setModel((available.find((entry) => entry.isDefault) ?? available[0]).id)
+      setModel(initialModel.id)
     } catch {
       if (!controller.signal.aborted) setError(i18n.t("codexSubscription.connectionError"))
     } finally {
@@ -70,7 +71,7 @@ export function CodexSubscriptionSetup({
         <p className="text-sm text-muted-foreground">{i18n.t("codexSubscription.description")}</p>
         <p className="text-sm">{i18n.t("codexSubscription.setup")}</p>
         <pre className="overflow-x-auto rounded bg-muted p-2 text-sm">
-          {"pnpm codex:login\npnpm codex:bridge"}
+          {"node codex-bridge/server.mjs --login\nnode codex-bridge/server.mjs"}
         </pre>
         <label className="flex flex-col gap-2 text-sm">
           {i18n.t("codexSubscription.token")}

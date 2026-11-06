@@ -24,7 +24,9 @@ describe("Codex subscription preset", () => {
   })
 
   it("refuses an empty token or invalid model", () => {
-    expect(() => createCodexProvider([], "", "model")).toThrow()
-    expect(() => createCodexProvider([], "x".repeat(64), "")).toThrow()
+    expect(() => createCodexProvider([], "", "model")).toThrow("Invalid Codex bridge configuration")
+    expect(() => createCodexProvider([], "x".repeat(64), "")).toThrow(
+      "Invalid Codex bridge configuration",
+    )
   })
 })

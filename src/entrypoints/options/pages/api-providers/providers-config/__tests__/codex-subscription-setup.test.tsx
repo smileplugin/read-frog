@@ -6,7 +6,7 @@ import { CodexSubscriptionSetup } from "../codex-subscription-setup"
 
 afterEach(() => vi.unstubAllGlobals())
 
-function setup(onAdd = vi.fn(async () => {})) {
+function setup(onAdd = vi.fn<(token: string, model: string) => Promise<void>>(async () => {})) {
   render(<CodexSubscriptionSetup onAdd={onAdd} />)
   fireEvent.click(screen.getByText("codexSubscription.title"))
   fireEvent.change(screen.getByLabelText("codexSubscription.token"), {
@@ -17,7 +17,7 @@ function setup(onAdd = vi.fn(async () => {})) {
 
 describe("Codex subscription setup", () => {
   it("loads account models and saves the selected model with the local token", async () => {
-    const fetchMock = vi.fn(
+    const fetchMock = vi.fn<typeof fetch>(
       async () =>
         new Response(
           JSON.stringify({
@@ -44,7 +44,7 @@ describe("Codex subscription setup", () => {
   it("shows a connection error and prevents adding an unauthenticated provider", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response("{}", { status: 502 })),
+      vi.fn<typeof fetch>(async () => new Response("{}", { status: 502 })),
     )
     const onAdd = setup()
     fireEvent.click(screen.getByRole("button", { name: "codexSubscription.connect" }))
@@ -56,7 +56,7 @@ describe("Codex subscription setup", () => {
   it("invalidates discovered models after the token changes", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response(JSON.stringify({ data: [{ id: "model-a" }] }))),
+      vi.fn<typeof fetch>(async () => new Response(JSON.stringify({ data: [{ id: "model-a" }] }))),
     )
     setup()
     fireEvent.click(screen.getByRole("button", { name: "codexSubscription.connect" }))
