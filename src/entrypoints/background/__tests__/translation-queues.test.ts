@@ -184,6 +184,63 @@ describe("translation queue helpers", () => {
     ).toBe(true)
   }, 15_000)
 
+  it.each(["webpage", "subtitles"])(
+    "lets a slow Codex %s translation finish beyond the ordinary queue deadline",
+    async (queueName) => {
+      vi.useFakeTimers()
+      try {
+        const provider: ProviderConfig = {
+          id: "codex-local",
+          name: "Codex",
+          provider: "openai-compatible",
+          enabled: true,
+          baseURL: "http://127.0.0.1:19827/v1",
+          apiKey: "local-bridge-token",
+          model: { model: "use-custom-model", isCustomModel: true, customModel: "codex-model" },
+        }
+        executeTranslateMock.mockImplementation(
+          () =>
+            new Promise<string>((resolve) => {
+              setTimeout(() => resolve("translated text"), 25_000)
+            }),
+        )
+        if (queueName === "webpage") {
+          const { setupPageTranslationHandlers } = await import("../page-translation")
+          setupPageTranslationHandlers()
+        } else {
+          const { setupSubtitlesTranslationHandlers } = await import("../subtitles-translation")
+          setupSubtitlesTranslationHandlers()
+        }
+        const handler = getRegisteredMessageHandler(
+          queueName === "webpage" ? "enqueueTranslateRequest" : "enqueueSubtitlesTranslateRequest",
+        )
+        let outcome: unknown = "pending"
+        void handler({
+          data: {
+            text: "hello",
+            langConfig: DEFAULT_CONFIG.language,
+            providerRef: localProviderRef(provider),
+            scheduleAt: Date.now(),
+            hash: `slow-codex-${queueName}`,
+          },
+        }).then(
+          (value) => {
+            outcome = value
+          },
+          () => {
+            outcome = "error"
+          },
+        )
+        await vi.advanceTimersByTimeAsync(30_000)
+        expect(outcome).toBe("translated text")
+        expect(executeTranslateMock).toHaveBeenCalledOnce()
+      } finally {
+        vi.clearAllTimers()
+        vi.useRealTimers()
+      }
+    },
+  )
+
   it("registers translation handlers before queue configuration resolves", async () => {
     let resolveConfig!: (config: typeof DEFAULT_CONFIG) => void
     const configPromise = new Promise<typeof DEFAULT_CONFIG>((resolve) => {

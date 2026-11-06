@@ -26,7 +26,7 @@ jobs:
       - run: pnpm fmt:check
       - run: pnpm type-check
         if: ${{ !cancelled() }}
-      - run: pnpm test src/entrypoints/options/pages/api-providers/providers-config/__tests__ src/utils/providers/__tests__
+      - run: pnpm test src/entrypoints/options/pages/api-providers/providers-config/__tests__ src/utils/providers/__tests__ src/entrypoints/background/__tests__/translation-queues.test.ts
         if: ${{ !cancelled() }}
       - run: pnpm build
         if: ${{ !cancelled() }}
