@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/base-ui/checkbox"
 import { i18n } from "@/utils/i18n"
 import { cn } from "@/utils/styles/utils"
 import { highlightedProviderFieldAtom, PROVIDER_FIELD_HIGHLIGHT_DURATION_MS } from "../atoms"
+import { isCodexBridgeProvider } from "../codex"
 import { ConnectionTestButton } from "./components/connection-button"
 import { GetAPIKeyButton } from "./components/get-api-key-button"
 import { withForm } from "./form"
@@ -31,6 +32,7 @@ export const APIKeyField = withForm({
     }, [isHighlighted, setHighlightedField])
 
     const providerType = providerConfig.provider
+    const isCodex = isCodexBridgeProvider(providerConfig)
     if (providerType === "ollama") {
       return <></>
     }
@@ -40,8 +42,8 @@ export const APIKeyField = withForm({
         {(field) => (
           <div className="flex flex-col gap-2">
             <field.InputFieldAutoSave
-              label="API Key"
-              labelAfter={<GetAPIKeyButton providerType={providerType} />}
+              label={isCodex ? i18n.t("codexSubscription.token") : "API Key"}
+              labelAfter={isCodex ? undefined : <GetAPIKeyButton providerType={providerType} />}
               labelExtra={<ConnectionTestButton providerConfig={providerConfig} />}
               type={showAPIKey ? "text" : "password"}
               className={cn(isHighlighted && "animate-ring-flash")}

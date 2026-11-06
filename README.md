@@ -1,3 +1,7 @@
+# Codex 订阅接入版
+
+本 fork 新增陪读蛙的 Codex 订阅配置入口与本地桥接。安装、登录及使用步骤见 [Codex 订阅接入说明](./CODEX_SUBSCRIPTION.md)。
+
 <div align="center"><a name="readme-top"></a>
 
 [![Read Frog banner][image-banner]][website]

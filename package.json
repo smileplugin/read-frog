@@ -5,6 +5,9 @@
   "description": "Read Frog browser extension for language learning",
   "type": "module",
   "scripts": {
+    "codex:login": "node codex-bridge/server.mjs --login",
+    "codex:bridge": "node codex-bridge/server.mjs",
+    "test:codex-bridge": "node --test codex-bridge/*.node-test.mjs",
     "build": "wxt build",
     "build:edge": "wxt build -b edge",
     "build:firefox": "wxt build -b firefox --mv3",

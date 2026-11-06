@@ -1970,3 +1970,14 @@ languages:
   wls: 瓦利斯语
   rar: 拉罗汤加语
   hif: 斐济印地语
+
+codexSubscription:
+  title: "Codex 订阅（本地桥接）"
+  description: "通过本机 Codex 使用 ChatGPT 订阅额度，无需 OpenAI API Key 或陪读蛙 AI 会员。仍受订阅用量限制。"
+  setup: "在你的 fork 项目目录依次运行以下命令，完成 ChatGPT 登录后保持桥接运行。"
+  token: "本地连接密钥（由终端显示，不是 OpenAI 账号凭据）"
+  connect: "连接并获取模型"
+  model: "Codex 模型"
+  add: "添加 Codex 服务商"
+  connectionError: "连接失败。请确认桥接正在运行、连接密钥正确，并已通过 pnpm codex:login 登录 ChatGPT。不支持 API Key 登录。"
+  saveError: "保存服务商失败，请重试。"
