@@ -38,6 +38,8 @@
 4. **仅复用进程不够。** 默认传输同进程的第二个独立 thread 仍出现 WebSocket 失败和 4 次可恢复错误，耗时反而增加。这不等于同一个 thread 的连接复用无效，而是说明当前“每次独立翻译会话”的设计不能仅靠进程池规避故障。
 5. **连接错误有直接证据。** 默认组记录到 15 条带 WebSocket 失败标签的 stderr 日志，以及 8 条 `responseStreamDisconnected`、`willRetry=true` 通知；两组 HTTP 路径都没有这些事件。只保存标签与错误类型，未保存原始 stderr 内容。
 
+补充可证伪检查：在修复后的同一自定义 provider 上，仅恢复 `supports_websockets=true`，再次出现多轮连接失败；脱敏后的具体原因是 `Connection reset by peer (os error 54)`，该次翻译耗时 15.002 秒。这进一步确认传输开关与故障相关，但不能据此唯一定位是代理、防火墙、中间网络还是服务端重置了连接。
+
 ## 第一方文档和源码依据
 
 - 官方配置支持 `model_providers.<id>.supports_websockets`，并列出 HTTP 请求重试、流式重试与空闲超时设置。[官方配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)
