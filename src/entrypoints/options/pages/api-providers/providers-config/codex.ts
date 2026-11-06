@@ -1,12 +1,9 @@
 import type { APIProviderConfig, ProvidersConfig } from "@/types/config/provider"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { getUniqueName } from "@/utils/name"
+import { CODEX_BRIDGE_URL } from "@/utils/providers/codex-bridge"
 
-export const CODEX_BRIDGE_URL = "http://127.0.0.1:19827/v1"
-
-export function isCodexBridgeProvider(provider: APIProviderConfig): boolean {
-  return provider.provider === "openai-compatible" && provider.baseURL === CODEX_BRIDGE_URL
-}
+export { CODEX_BRIDGE_URL, isCodexBridgeProvider } from "@/utils/providers/codex-bridge"
 
 export function createCodexProvider(
   providers: ProvidersConfig,

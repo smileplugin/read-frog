@@ -79,6 +79,23 @@ pnpm type-check
 WXT_SKIP_ENV_VALIDATION=true pnpm build
 ```
 
-桥接测试使用模拟 Codex 进程与 HTTP 请求，覆盖认证、API Key 拒绝、模型发现、流式响应、结构化输出、取消与超时。模拟测试通过不代表真实订阅登录和在线翻译已经验证；真实体验需要完成上述 ChatGPT 登录步骤后检查。
+桥接测试使用模拟 Codex 进程与 HTTP 请求，覆盖认证、API Key 拒绝、模型发现、流式响应、结构化输出、取消与超时。
+
+### 2026-11-06 真实订阅验证
+
+在 macOS、Node.js 25.1.0、Codex CLI 0.164.0 上，使用本机已登录的 ChatGPT 账号，在临时隔离目录复用登录凭据，通过真实 HTTP 桥接调用 `gpt-6-luna`，未使用 OpenAI API Key。测试结束后临时凭据已删除。
+
+| 检查             | 结果                                       | 耗时        |
+| ---------------- | ------------------------------------------ | ----------- |
+| 模型发现         | 返回 8 个模型                              | 约 5.8 秒   |
+| 普通翻译         | HTTP 200，返回中文译文                     | 约 118.0 秒 |
+| 流式翻译         | 返回增量文本、`stop` 和 `[DONE]`           | 约 116.1 秒 |
+| JSON schema 输出 | HTTP 200，返回含 `translation` 字段的 JSON | 约 118.0 秒 |
+
+普通翻译示例：`The browser extension translates web pages while keeping the original text.` → `该浏览器扩展会在保留原文的同时翻译网页。`
+
+实测发现并修复了两个兼容问题：正常的 `userMessage` 生命周期事件被误判为工具调用；扩展队列的普通 20 秒超时会提前取消慢速 Codex 请求。现在默认端口的 Codex 服务商获得至少 125 秒的网页及字幕队列等待时间，其他服务商保留原有超时策略；回归测试覆盖这些情况。
+
+这些结果证明真实订阅的 HTTP 文本生成链路可用。本次延迟明显偏高，原因尚未定位；未在浏览器中实测完整网页排版、视频字幕播放或大批量并发，因此不能把接口连通等同于所有浏览体验已经验证。
 
 参考：[官方 Codex app-server 文档](https://learn.chatgpt.com/docs/app-server)、[官方认证说明](https://learn.chatgpt.com/docs/auth)。

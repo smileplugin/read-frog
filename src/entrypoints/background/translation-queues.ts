@@ -25,6 +25,7 @@ import { requireHostedFeature } from "@/utils/hosted-ai/routing"
 import { logger } from "@/utils/logger"
 import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
+import { getCodexTranslationTimeoutMs } from "@/utils/providers/codex-bridge"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
@@ -364,7 +365,9 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         return await executeBatchTranslation(dataList, promptResolver, signal, hostedRequestId)
       }
 
-      return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, { timeoutMs })
+      return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, {
+        timeoutMs: getCodexTranslationTimeoutMs(getLocalProviderConfig(provider), timeoutMs),
+      })
     },
     executeIndividual: async (data) => {
       const { text, langConfig, provider, hash, scheduleAt, context, scope, glossaryTerms } = data
@@ -388,7 +391,9 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           glossaryTerms,
         })
       }
-      return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
+      return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
+        timeoutMs: getCodexTranslationTimeoutMs(getLocalProviderConfig(provider), 20_000),
+      })
     },
     onError: (error, context) => {
       const errorType = context.isFallback ? "Individual request" : "Batch request"
