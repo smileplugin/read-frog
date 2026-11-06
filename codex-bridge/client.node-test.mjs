@@ -11,6 +11,35 @@ process.env.READ_FROG_CODEX_BIN = fileURLToPath(new URL("./fixtures/codex.mjs", 
 const { createCodexClient } = await import("./client.mjs")
 after(() => rm(home, { recursive: true, force: true }))
 
+test("accepts the userMessage lifecycle event emitted by real Codex turns", async () => {
+  const client = await createCodexClient()
+  try {
+    assert.equal(
+      await client.complete({
+        model: "fixture-model",
+        messages: [{ role: "user", content: "hello" }],
+      }),
+      "你好",
+    )
+  } finally {
+    client.close()
+  }
+})
+
+test("still rejects actual tool execution events", async () => {
+  process.env.TEST_CODEX_ITEM = "commandExecution"
+  const client = await createCodexClient()
+  delete process.env.TEST_CODEX_ITEM
+  try {
+    await assert.rejects(
+      client.complete({ model: "fixture-model", messages: [{ role: "user", content: "hello" }] }),
+      /attempted a tool call/,
+    )
+  } finally {
+    client.close()
+  }
+})
+
 test("performs the app-server handshake, loads models and streams final text only", async () => {
   const client = await createCodexClient()
   try {

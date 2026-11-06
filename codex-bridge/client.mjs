@@ -185,7 +185,11 @@ export async function createCodexClient({ signal, timeoutMs = 120_000 } = {}) {
           if (message.method === "item/started") {
             if (p.item?.type === "agentMessage" && p.item.phase === "commentary")
               commentaryItems.add(p.item.id)
-            if (!["agentMessage", "reasoning", "contextCompaction"].includes(p.item?.type)) {
+            if (
+              !["userMessage", "agentMessage", "reasoning", "contextCompaction"].includes(
+                p.item?.type,
+              )
+            ) {
               rejectCompletion(
                 new Error("Codex attempted a tool call. Translation tools are disabled."),
               )
