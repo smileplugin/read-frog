@@ -215,7 +215,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     })
     server.listen(port, "127.0.0.1", () => {
       console.log(
-        `陪读蛙 Codex 桥接已启动：http://127.0.0.1:${port}/v1\n本地连接密钥（不是 OpenAI API Key）：${token}\n请在扩展的“添加服务商 → Codex 订阅”中填写此密钥。\n首次使用先运行 pnpm codex:login，通过 ChatGPT 登录。`,
+        `陪读蛙 Codex 桥接已启动：http://127.0.0.1:${port}/v1\n本地连接密钥（不是 OpenAI API Key）：${token}\n请在扩展的“添加服务商 → Codex 订阅”中填写此密钥。\n首次使用先运行 node codex-bridge/server.mjs --login，通过 ChatGPT 登录。`,
       )
     })
     for (const event of ["SIGINT", "SIGTERM"])

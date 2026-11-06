@@ -1962,10 +1962,10 @@ languages:
 codexSubscription:
   title: "Codex subscription (local bridge)"
   description: "Use your ChatGPT subscription through a local Codex companion. No OpenAI API key or Read Frog AI membership is required. Subscription limits still apply."
-  setup: "In your fork directory, run the following commands. Complete the ChatGPT sign-in, then keep the bridge running."
+  setup: "In the directory containing codex-bridge, run the following commands. Complete the ChatGPT sign-in, then keep the bridge running."
   token: "Local bridge token (printed in the terminal; not your OpenAI credentials)"
   connect: "Connect and load models"
   model: "Codex model"
   add: "Add Codex provider"
-  connectionError: "Cannot connect. Check that the bridge is running, the token is correct, and pnpm codex:login completed with ChatGPT. API key login is not supported."
+  connectionError: "Cannot connect. Check that the bridge is running, the token is correct, and node codex-bridge/server.mjs --login completed with ChatGPT. API key login is not supported."
   saveError: "Could not save the provider. Please try again."

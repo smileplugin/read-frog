@@ -55,7 +55,11 @@ export async function createCodexClient({ signal, timeoutMs = 120_000 } = {}) {
     for (const listener of listeners) listener({ method: "bridge/error", params: { error } })
   }
   child.on("error", () =>
-    fail(new Error("Cannot start Codex. Install the Codex CLI and run pnpm codex:login.")),
+    fail(
+      new Error(
+        "Cannot start Codex. Install the Codex CLI and run node codex-bridge/server.mjs --login.",
+      ),
+    ),
   )
   child.on("exit", () => {
     if (!closed) fail(new Error("Codex exited before completing the request."))
@@ -128,7 +132,7 @@ export async function createCodexClient({ signal, timeoutMs = 120_000 } = {}) {
     const { account } = await rpc("account/read", { refreshToken: false })
     if (account?.type !== "chatgpt") {
       throw new Error(
-        "ChatGPT subscription login required. Run pnpm codex:login. API key billing is disabled.",
+        "ChatGPT subscription login required. Run node codex-bridge/server.mjs --login. API key billing is disabled.",
       )
     }
     return {
