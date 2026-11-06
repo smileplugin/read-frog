@@ -65,9 +65,7 @@ export function CodexSubscriptionSetup({
 
   return (
     <details className="my-2 rounded-lg border p-4">
-      <summary className="cursor-pointer font-medium">
-        {i18n.t("codexSubscription.title")}
-      </summary>
+      <summary className="cursor-pointer font-medium">{i18n.t("codexSubscription.title")}</summary>
       <div className="mt-3 flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">{i18n.t("codexSubscription.description")}</p>
         <p className="text-sm">{i18n.t("codexSubscription.setup")}</p>
@@ -96,8 +94,17 @@ export function CodexSubscriptionSetup({
           <>
             <label className="flex flex-col gap-2 text-sm">
               {i18n.t("codexSubscription.model")}
-              <select className="rounded border bg-background p-2" value={model} disabled={busy} onChange={(event) => setModel(event.target.value)}>
-                {models.map((id) => <option key={id} value={id}>{id}</option>)}
+              <select
+                className="rounded border bg-background p-2"
+                value={model}
+                disabled={busy}
+                onChange={(event) => setModel(event.target.value)}
+              >
+                {models.map((id) => (
+                  <option key={id} value={id}>
+                    {id}
+                  </option>
+                ))}
               </select>
             </label>
             <Button type="button" disabled={busy || !model} onClick={add}>
@@ -105,7 +112,11 @@ export function CodexSubscriptionSetup({
             </Button>
           </>
         )}
-        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <p role="alert" className="text-sm text-destructive">
+            {error}
+          </p>
+        )}
       </div>
     </details>
   )

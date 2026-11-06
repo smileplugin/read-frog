@@ -25,8 +25,11 @@ jobs:
       - run: pnpm test:codex-bridge
       - run: pnpm fmt:check
       - run: pnpm type-check
+        if: ${{ !cancelled() }}
       - run: pnpm test src/entrypoints/options/pages/api-providers/providers-config/__tests__ src/utils/providers/__tests__
+        if: ${{ !cancelled() }}
       - run: pnpm build
+        if: ${{ !cancelled() }}
       - uses: actions/upload-artifact@v4
         with:
           name: read-frog-codex-chrome

@@ -40,15 +40,17 @@ export default function AddProviderDialog({ onClose }: { onClose: () => void }) 
       <DialogHeader>
         <DialogTitle>{i18n.t("options.apiProviders.dialog.title")}</DialogTitle>
       </DialogHeader>
-      <CodexSubscriptionSetup onAdd={async (token, model) => {
-        await requestNavigation(async () => {
-          const providers = store.get(configFieldsAtomMap.providersConfig)
-          const provider = createCodexProvider(providers, token, model)
-          await setProvidersConfig([...providers, provider])
-          setSelectedProviderId(provider.id)
-          onClose()
-        })
-      }} />
+      <CodexSubscriptionSetup
+        onAdd={async (token, model) => {
+          await requestNavigation(async () => {
+            const providers = store.get(configFieldsAtomMap.providersConfig)
+            const provider = createCodexProvider(providers, token, model)
+            await setProvidersConfig([...providers, provider])
+            setSelectedProviderId(provider.id)
+            onClose()
+          })
+        }}
+      />
       {Object.entries(PROVIDER_GROUPS).map(([groupKey, group]) => (
         <ProviderButtonGroup
           key={groupKey}

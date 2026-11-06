@@ -40,12 +40,12 @@
 
 可选环境变量：
 
-| 变量 | 用途 |
-| --- | --- |
-| `READ_FROG_CODEX_BIN` | Codex CLI 可执行文件路径，默认 `codex` |
-| `READ_FROG_CODEX_HOME` | 桥接专用 Codex 目录，默认 `~/.read-frog-codex` |
-| `READ_FROG_CODEX_BRIDGE_TOKEN` | 固定本地连接密钥，默认每次启动随机生成 |
-| `READ_FROG_CODEX_PORT` | 自定义端口，默认 `19827`；修改后需手动添加自定义 Chat Completions 服务商并填写对应 Base URL |
+| 变量                           | 用途                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `READ_FROG_CODEX_BIN`          | Codex CLI 可执行文件路径，默认 `codex`                                                      |
+| `READ_FROG_CODEX_HOME`         | 桥接专用 Codex 目录，默认 `~/.read-frog-codex`                                              |
+| `READ_FROG_CODEX_BRIDGE_TOKEN` | 固定本地连接密钥，默认每次启动随机生成                                                      |
+| `READ_FROG_CODEX_PORT`         | 自定义端口，默认 `19827`；修改后需手动添加自定义 Chat Completions 服务商并填写对应 Base URL |
 
 ## 实现与范围
 
